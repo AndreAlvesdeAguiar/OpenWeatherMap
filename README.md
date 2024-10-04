@@ -5,16 +5,20 @@ possível enviar um comentário em um Gist com a temperatura atual e a previsão
 
 Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previsões meteorológicas e postar essas informações como comentários em um Gist.
 
-## 2. Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 /OpenWeatherMap
 │
 ├── app
 │   ├── __init__.py
-│   ├── __pycache__/
 │   ├── gist_service.py
 │   └── weather_sdk.py
+│
+├── tests
+│   ├── __init__.py
+│   ├── test_weather_sdk.py
+│   └── test_gist_service.py
 │
 ├── .env
 ├── docker-compose.yml
@@ -33,25 +37,60 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 ## Configuração
 
 ### Pré-requisitos
-
+Antes de iniciar, você precisa ter o seguinte instalado em sua máquina:
 - [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) instalados na sua máquina.
 - Chaves de API para o OpenWeatherMap e GitHub.
 
-##explicar mais sobre a obtenção dos tokens.
+### Instalação
+Clone o repositório:
+```
+git clone https://github.com/AndreAlvesdeAguiar/OpenWeatherMap.git
+cd OpenWeatherMap
+```
+
+## Obtenção das Chaves de API
+
+Para utilizar as APIs, você precisará de chaves de API que podem ser obtidas da seguinte forma:
+
+    OpenWeatherMap:
+        Crie uma conta no OpenWeatherMap.
+        Após a verificação do e-mail, faça login e acesse a seção "API Keys" no painel.
+        Clique em "Create" para gerar uma nova chave de API e copie essa chave.
+
+    GitHub:
+        Acesse GitHub e faça login.
+        Vá para as configurações da sua conta e selecione "Developer settings".
+        Clique em "Personal access tokens" e, em seguida, em "Tokens (classic)".
+        Clique em "Generate new token", selecione os escopos necessários (como gist) e crie o token. Certifique-se de copiá-lo imediatamente.
+
 
 ### Configure suas variáveis de ambiente. 
 
-Crie um arquivo ```.env``` com suas chaves de API:
+Crie um arquivo ```.env``` na raiz do projeto com suas chaves de API:
 
 ```
 OWM_API_KEY=sua_chave_api_openweathermap
 GITHUB_API_KEY=sua_chave_api_github
 ```
 
-### Instalação
+### Executando o Docker
+Para subir a aplicação em um container Docker, execute o seguinte comando:
+```
+sudo docker-compose up --build
+```
 
-1. Clone o repositório:
-   ```
-   git clone https://github.com/AndreAlvesdeAguiar/OpenWeatherMap.git
-   cd OpenWeatherMap
-   ```
+### Executando Testes no Docker
+Verifique os containers em execução:
+```
+sudo docker ps
+```
+
+Entre no container usando o seguinte comando (substitua teste_caiena-app-1 pelo nome do seu container, se necessário):
+```
+sudo docker exec -it {NOME DO CONTAINER} /bin/bash
+```
+Navegue até a pasta de testes e Execute os testes:
+```
+cd /app/tests
+pytest test_gist_service.py
+```

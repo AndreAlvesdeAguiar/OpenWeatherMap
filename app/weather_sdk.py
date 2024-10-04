@@ -7,7 +7,7 @@ load_dotenv()
 
 class OpenWeatherSDK:
     def __init__(self):
-        self.api_key = os.getenv("OPENWEATHER_API_KEY")  # Agora usando a variável de ambiente
+        self.api_key = os.getenv("OPENWEATHER_API_KEY")
         self.base_url = "https://api.openweathermap.org/data/2.5/"
 
     def get_weather(self, city):
