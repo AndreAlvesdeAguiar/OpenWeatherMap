@@ -20,7 +20,7 @@ services:
   #   image: wernight/ngrok
   #   environment:
   #     - NGROK_PORT=app:8000  # Faz o ngrok se conectar ao serviço app na porta 8000
-  #     - NGROK_AUTH=2Ge1pMqVlAtPyTjvvdXLlGIsLg4_5BHmZV91sehFaNYeLwG7u  # Substitua pelo seu token de autenticação do ngrok (opcional)
+  #     - NGROK_AUTH={TOKEN_NGROK}  # Substitua pelo seu token de autenticação do ngrok (opcional)
   #   ports:
   #     - "4040:4040"  # Porta para acessar o dashboard do ngrok
   #   depends_on:
