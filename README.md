@@ -1,4 +1,4 @@
-# Integração OpenWeatherMap & GitHub Gist
+# Monitoramento do Tempo com OpenWeatherMap e GitHub Gist
 
 Este projeto é uma solução para o aplicação integrada com o OpenWeatherMap e o Github para que seja
 possível enviar um comentário em um Gist com a temperatura atual e a previsão dotempo dos próximos cinco dias (média diária) de uma cidade. 
@@ -18,7 +18,8 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 ├── tests
 │   ├── __init__.py
 │   ├── test_weather_sdk.py
-│   └── test_gist_service.py
+│   ├── test_gist_service.py
+│   └── test_main.py
 │
 ├── .env
 ├── docker-compose.yml
@@ -33,6 +34,13 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 - **Previsão do Tempo**: Busca as condições climáticas atuais e a previsão de 5 dias usando a API do OpenWeatherMap.
 - **Integração com o GitHub Gist**: Publica um comentário com as informações meteorológicas em um Gist utilizando a API do GitHub.
 - **Aplicação Dockerizada**: Roda dentro de um container Docker com suporte ao Docker Compose.
+
+## Exemplo de uso
+
+```
+Exemplo de requisição:
+GET /comentario/São Paulo
+```
 
 ## Configuração
 
@@ -94,3 +102,39 @@ Navegue até a pasta de testes e Execute os testes:
 cd /app/tests
 pytest test_gist_service.py
 ```
+
+### Ngrok (Opcional)
+O Ngrok é uma ferramenta que permite expor o seu servidor local a um endereço público. Isso é útil para testar webhooks ou compartilhar sua aplicação em desenvolvimento.
+
+```
+  # ngrok:
+  #   image: wernight/ngrok
+  #   environment:
+  #     - NGROK_PORT=app:8000  # Faz o ngrok se conectar ao serviço app na porta 8000
+  #     - NGROK_AUTH={TOKEN_NGROK}  # Substitua pelo seu token de autenticação do ngrok (opcional)
+  #   ports:
+  #     - "4040:4040"  # Porta para acessar o dashboard do ngrok
+  #   depends_on:
+  #     - app  # Certifique-se de que o app suba antes do ngrok
+```
+
+### Formatação exemplo
+
+```
+34°C e nublado em <cidade> em 12/12. Média para os próximos dias: 32°C em 13/12, 25°C em 14/12, 29°C em 15/12, 33°C em 16/12 e 28°C em 16/12.
+```
+- Data - "DD/MM"
+- Temperatura - Numeros inteiros
+- Tradução nuvens - Inglês x Português 
+
+#### Traduções Sugeridas
+
+| Tipo   | Descrição em Inglês          | Descrição em Português        |
+|--------|------------------------------|-------------------------------|
+| Nuvens | Few clouds: 11-25%          | Poucas nuvens: 11-25%        |
+| Nuvens | Scattered clouds: 25-50%    | Nuvens dispersas: 25-50%     |
+| Nuvens | Broken clouds: 51-84%       | Parcialmente nublado: 51-84%  |
+| Nuvens | Overcast clouds: 85-100%    | Nublado: 85-100%             |
+
+https://openweathermap.org/weather-conditions
+
