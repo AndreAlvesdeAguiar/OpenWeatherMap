@@ -6,6 +6,14 @@ from datetime import datetime
 app = FastAPI()
 weather_sdk = OpenWeatherSDK()
 
+# Dicionário de tradução
+weather_descriptions = {
+    "few clouds": "poucas nuvens",
+    "scattered clouds": "nuvens dispersas",
+    "broken clouds": "parcialmente nublado",
+    "overcast clouds": "nublado",
+}
+
 @app.get("/comentario/{cidade}")
 def comentario(cidade: str):
     try:
@@ -23,25 +31,38 @@ def comentario(cidade: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 def format_comment(weather, forecast, cidade):
-    current_temp = weather['main']['temp']
+    # Temperatura atual
+    current_temp = int(weather['main']['temp'])  # Converte para inteiro
+    
+    # Obter a descrição em inglês e traduzir
     description = weather['weather'][0]['description']
-    
+    translated_description = weather_descriptions.get(description, description)  # Tradução
+
     # Formatar a data de hoje
-    today = datetime.fromtimestamp(forecast['list'][0]['dt']).strftime('%d/%m')
-    
-    # Formatar previsão dos próximos dias
+    today = datetime.now().strftime('%d/%m')
+
+    # Inicializa a previsão dos próximos dias
     forecast_str = []
-    num_days = min(len(forecast['list']) // 8, 5)  # Calcula o número de dias disponíveis
-    
-    for i in range(1, num_days + 1):  # Pega a previsão para os próximos dias
-        day_index = i * 8  # Cada 8 entradas representa um dia
-        if day_index < len(forecast['list']):  # Verifica se o índice está dentro do limite
-            day = forecast['list'][day_index]
-            date = datetime.fromtimestamp(day['dt']).strftime('%d/%m')
-            temp = day['main']['temp']
-            forecast_str.append(f"{temp}°C em {date}")
+    daily_temperatures = {}
+
+    # Coletar a previsão para os próximos 6 dias (incluindo hoje)
+    for entry in forecast['list']:
+        dt = datetime.fromtimestamp(entry['dt'])
+        day = dt.date()
+        
+        # Armazenar a temperatura em um dicionário
+        if day not in daily_temperatures:
+            daily_temperatures[day] = []
+        daily_temperatures[day].append(int(entry['main']['temp']))  # Converte para inteiro
+
+    # Calcular a média das temperaturas diárias e formatar a string
+    for day in sorted(daily_temperatures.keys()):
+        avg_temp = sum(daily_temperatures[day]) / len(daily_temperatures[day])
+        if len(forecast_str) < 5 and day != datetime.now().date():  # Ignorar o dia atual para a média
+            forecast_str.append(f"{int(avg_temp)}°C em {day.strftime('%d/%m')}")  # Converte para inteiro
 
     # Criar o comentário
-    comment = (f"{current_temp}°C e {description} em {cidade} no dia {today}. "
+    comment = (f"{current_temp}°C e {translated_description} em {cidade} em {today}. "
                f"Média para os próximos dias: " + ", ".join(forecast_str) + ".")
+    
     return comment
