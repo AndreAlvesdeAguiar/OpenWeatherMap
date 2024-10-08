@@ -30,7 +30,7 @@ class CommentFormatter:
 
         # Coletar a previsão para os próximos 5 dias, incluindo o dia atual
         for entry in forecast['list']:
-            dt = datetime.fromtimestamp(entry['dt'])  # Conversão do timestamp
+            dt = datetime.fromtimestamp(entry['dt']) - timedelta(hours=3)  # Ajuste para UTC-3
             day = dt.date()
 
             # Armazenar a temperatura em um dicionário
