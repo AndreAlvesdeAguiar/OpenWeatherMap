@@ -1,5 +1,3 @@
-# main.py
-
 from fastapi import FastAPI, HTTPException
 from app.gist_service import GistService
 
