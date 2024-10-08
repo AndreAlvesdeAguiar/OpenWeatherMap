@@ -1,51 +1,39 @@
+import pytest
 from datetime import datetime, timedelta
+from app.comment_formatter import CommentFormatter
 
-class CommentFormatter:
-    # Dicionário de tradução
-    weather_descriptions = {
-        "few clouds": "poucas nuvens",
-        "scattered clouds": "nuvens dispersas",
-        "broken clouds": "parcialmente nublado",
-        "overcast clouds": "nublado",
+@pytest.fixture
+def formatter():
+    return CommentFormatter()
+
+def test_format_comment(formatter):
+    # Exemplo de dados simulados
+    weather = {
+        'main': {'temp': 17},
+        'weather': [{'description': 'broken clouds'}]
     }
+    forecast = {
+        'list': [
+            {'dt': (datetime.utcnow() + timedelta(days=1)).timestamp(), 'main': {'temp': 18}},  # 1 dia depois de hoje
+            {'dt': (datetime.utcnow() + timedelta(days=2)).timestamp(), 'main': {'temp': 19}},  # 2 dias depois de hoje
+            {'dt': (datetime.utcnow() + timedelta(days=3)).timestamp(), 'main': {'temp': 21}},  # 3 dias depois de hoje
+            {'dt': (datetime.utcnow() + timedelta(days=4)).timestamp(), 'main': {'temp': 22}},  # 4 dias depois de hoje
+            {'dt': (datetime.utcnow() + timedelta(days=5)).timestamp(), 'main': {'temp': 20}},  # 5 dias depois de hoje
+        ]
+    }
+    cidade = "São Paulo"
+    comment = formatter.format_comment(weather, forecast, cidade)
 
-    def format_comment(self, weather, forecast, cidade):
-        # Temperatura atual
-        current_temp = int(weather['main']['temp'])  # Converte para inteiro
-        
-        # Obter a descrição em inglês e traduzir
-        description = weather['weather'][0]['description']
-        translated_description = self.weather_descriptions.get(description, description)  # Tradução
+    # Data de hoje no formato esperado (UTC-3)
+    today = (datetime.utcnow() - timedelta(hours=3)).strftime('%d/%m')
 
-        # Formatar a data de hoje considerando UTC-3
-        now_utc = datetime.utcnow()  # Obtém a hora atual em UTC
-        now_local = now_utc - timedelta(hours=3)  # Converte para o horário de São Paulo
-        today = now_local.strftime('%d/%m')
-
-        # Inicializa a previsão dos próximos dias
-        forecast_str = []
-        daily_temperatures = {}
-
-        # Coletar a previsão para o dia atual mais 5 dias
-        for entry in forecast['list']:
-            dt = datetime.fromtimestamp(entry['dt'])  # Conversão do timestamp para UTC
-            dt_local = dt - timedelta(hours=3)  # Ajuste para o fuso horário de São Paulo
-            day = dt_local.date()
-
-            # Armazenar a temperatura em um dicionário
-            if day not in daily_temperatures:
-                daily_temperatures[day] = []
-            daily_temperatures[day].append(int(entry['main']['temp']))  # Converte para inteiro
-
-        # Calcular a média das temperaturas diárias e formatar a string
-        forecast_days = sorted(daily_temperatures.keys())
-
-        for day in forecast_days[:6]:  # Pega o dia atual e os próximos 5 dias
-            avg_temp = sum(daily_temperatures[day]) / len(daily_temperatures[day])
-            forecast_str.append(f"{int(avg_temp)}°C em {day.strftime('%d/%m')}")
-
-        # Criar o comentário
-        comment = (f"{current_temp}°C e {translated_description} em {cidade} em {today}. "
-                   f"Média para os próximos dias: " + ", ".join(forecast_str) + ".")
-        
-        return comment
+    # Ajustar as datas previstas para o fuso UTC-3
+    expected_comment = (f"17°C e parcialmente nublado em São Paulo em {today}. "
+                        f"Média para os próximos dias: "
+                        f"18°C em {(datetime.utcnow() - timedelta(hours=3) + timedelta(days=1)).strftime('%d/%m')}, "
+                        f"19°C em {(datetime.utcnow() - timedelta(hours=3) + timedelta(days=2)).strftime('%d/%m')}, "
+                        f"21°C em {(datetime.utcnow() - timedelta(hours=3) + timedelta(days=3)).strftime('%d/%m')}, "
+                        f"22°C em {(datetime.utcnow() - timedelta(hours=3) + timedelta(days=4)).strftime('%d/%m')}, "
+                        f"20°C em {(datetime.utcnow() - timedelta(hours=3) + timedelta(days=5)).strftime('%d/%m')}.")
+    
+    assert comment == expected_comment

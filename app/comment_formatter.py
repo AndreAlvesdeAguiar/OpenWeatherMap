@@ -21,7 +21,7 @@ class CommentFormatter:
         # Formatar a data de hoje considerando UTC-3
         now_utc = datetime.utcnow()  # Obtém a hora atual em UTC
         now_local = now_utc - timedelta(hours=3)  # Converte para o horário de São Paulo
-        today = now_local.strftime('%d/%m')
+        today = now_local.date()  # Mudei para capturar a data, não a string formatada
 
         # Inicializa a previsão dos próximos dias
         forecast_str = []
@@ -42,14 +42,16 @@ class CommentFormatter:
         # Inclui o dia atual + próximos 5 dias (totalizando 6 dias)
         forecast_days = sorted(daily_temperatures.keys())  # Ordenar os dias
 
+        # Adiciona o dia atual à lista de dias se ele não estiver presente
+        if today not in daily_temperatures:
+            daily_temperatures[today] = [current_temp]  # Adiciona a temperatura atual
+
         for day in forecast_days[:6]:  # Pega o dia atual e os próximos 5 dias
             avg_temp = sum(daily_temperatures[day]) / len(daily_temperatures[day])
             forecast_str.append(f"{int(avg_temp)}°C em {day.strftime('%d/%m')}")  # Converte para inteiro
 
         # Criar o comentário
-        comment = (f"{current_temp}°C e {translated_description} em {cidade} em {today}. "
+        comment = (f"{current_temp}°C e {translated_description} em {cidade} em {today.strftime('%d/%m')}. "
                    f"Média para os próximos dias: " + ", ".join(forecast_str) + ".")
         
         return comment
-
-### Teste feito apos ~ 21 :30 mostrou o cenário do Fuso Horário 
