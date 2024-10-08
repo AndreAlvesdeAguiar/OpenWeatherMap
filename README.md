@@ -12,7 +12,7 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 │
 ├── app
 │   ├── __init__.py
-│   ├── comment_formatter.py  # Novo arquivo adicionado
+│   ├── comment_formatter.py
 │   ├── gist_service.py
 │   └── weather_sdk.py
 │
