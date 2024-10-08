@@ -12,11 +12,13 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 │
 ├── app
 │   ├── __init__.py
+│   ├── comment_formatter.py  # Novo arquivo adicionado
 │   ├── gist_service.py
 │   └── weather_sdk.py
 │
 ├── tests
 │   ├── __init__.py
+│   ├── test_comment_formatter.py
 │   ├── test_weather_sdk.py
 │   ├── test_gist_service.py
 │   └── test_main.py
@@ -27,6 +29,7 @@ Ele integra a API/SDK do OpenWeatherMap e a API do GitHub Gist para obter previs
 ├── main.py
 ├── README.md
 └── requirements.txt
+
 ```
 
 ## Funcionalidades
@@ -104,7 +107,9 @@ pytest test_gist_service.py
 ```
 
 ### Ngrok (Opcional)
-O Ngrok é uma ferramenta que permite expor o seu servidor local a um endereço público. Isso é útil para testar webhooks ou compartilhar sua aplicação em desenvolvimento.
+O Ngrok é uma ferramenta que permite expor seu servidor local a um endereço público, facilitando o teste de webhooks ou o compartilhamento de sua aplicação em desenvolvimento com outras pessoas.
+
+Para integrar o Ngrok à sua aplicação, descomente a seção correspondente no arquivo docker-compose.yml e adicione seu TOKEN_NGROK. É recomendável usar um arquivo ```.env``` para gerenciar suas variáveis de ambiente, assim como nas instruções anteriores.
 
 ```
   # ngrok:
@@ -127,14 +132,15 @@ O Ngrok é uma ferramenta que permite expor o seu servidor local a um endereço 
 - Temperatura - Numeros inteiros
 - Tradução nuvens - Inglês x Português 
 
-#### Traduções Sugeridas
+### Descrições do Clima
 
-| Tipo   | Descrição em Inglês          | Descrição em Português        |
-|--------|------------------------------|-------------------------------|
-| Nuvens | Few clouds: 11-25%          | Poucas nuvens: 11-25%        |
-| Nuvens | Scattered clouds: 25-50%    | Nuvens dispersas: 25-50%     |
-| Nuvens | Broken clouds: 51-84%       | Parcialmente nublado: 51-84%  |
-| Nuvens | Overcast clouds: 85-100%    | Nublado: 85-100%             |
+| Descrição em Inglês       | Descrição em Português     |
+|---------------------------|----------------------------|
+| Clear sky                 | Céu limpo                  |
+| Few clouds                | Poucas nuvens              |
+| Scattered clouds          | Nuvens dispersas           |
+| Broken clouds             | Parcialmente nublado       |
+| Overcast clouds           | Nublado                    |
 
 https://openweathermap.org/weather-conditions
 

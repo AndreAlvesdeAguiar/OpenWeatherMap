@@ -15,7 +15,6 @@ services:
       - .:/app
     command: ["pytest"]
 
-
   # ngrok:
   #   image: wernight/ngrok
   #   environment:
