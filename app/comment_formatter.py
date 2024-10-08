@@ -11,44 +11,48 @@ class CommentFormatter:
     }
 
     def format_comment(self, weather, forecast, cidade):
-        # Temperatura atual
-        current_temp = int(weather['main']['temp'])  # Converte para inteiro
+        # Inicializa o dicionário para armazenar as temperaturas
+        daily_temperatures = {}
+
+        # Coletar a temperatura atual com precisão de duas casas decimais
+        current_temp = float(weather['main']['temp'])  # Armazena como float para manter precisão
         
         # Obter a descrição em inglês e traduzir
         description = weather['weather'][0]['description']
         translated_description = self.weather_descriptions.get(description, description)  # Tradução
 
-        # Formatar a data de hoje considerando UTC-3
-        now_utc = datetime.utcnow()  # Obtém a hora atual em UTC
-        now_local = now_utc - timedelta(hours=3)  # Converte para o horário de São Paulo
+        # Obter a data e hora atuais
+        now_local = datetime.now()
         today = now_local.date()  # Captura a data atual
 
         # Inicializa a previsão dos próximos dias
         forecast_str = []
-        daily_temperatures = {}
 
-        # Coletar a previsão para os próximos 5 dias
+        # Coletar a previsão para os próximos 5 dias, incluindo o dia atual
         for entry in forecast['list']:
-            dt = datetime.fromtimestamp(entry['dt'])  # Conversão do timestamp para UTC
-            dt_local = dt - timedelta(hours=3)  # Ajuste para o fuso horário de São Paulo
-            day = dt_local.date()
+            dt = datetime.fromtimestamp(entry['dt'])  # Conversão do timestamp
+            day = dt.date()
 
             # Armazenar a temperatura em um dicionário
             if day not in daily_temperatures:
                 daily_temperatures[day] = []
-            daily_temperatures[day].append(int(entry['main']['temp']))  # Converte para inteiro
+            daily_temperatures[day].append(float(entry['main']['temp']))  # Armazenar como float para precisão
 
-        # Calcular a média das temperaturas diárias e formatar a string
-        # Ignorar o dia atual
+        # Calcular a média das temperaturas diárias
         forecast_days = sorted(daily_temperatures.keys())  # Ordenar os dias
 
-        for day in forecast_days:  # Pega os próximos dias
-            if day != today and len(forecast_str) < 5:  # Ignorar o dia atual e limitar a 5 dias
-                avg_temp = sum(daily_temperatures[day]) / len(daily_temperatures[day])
-                forecast_str.append(f"{int(avg_temp)}°C em {day.strftime('%d/%m')}")  # Converte para inteiro
+        for day in forecast_days:
+            avg_temp = round(sum(daily_temperatures[day]) / len(daily_temperatures[day]), 2)  # Média com 2 casas decimais
+
+            # Exibir a previsão dos próximos dias (sem o dia atual)
+            if day != today and len(forecast_str) < 5:
+                forecast_str.append(f"{int(avg_temp)}°C em {day.strftime('%d/%m')}")
+
+        # Arredondar a temperatura atual para o comentário final
+        current_temp_rounded = int(round(current_temp))
 
         # Criar o comentário
-        comment = (f"{current_temp}°C e {translated_description} em {cidade} em {today.strftime('%d/%m')}. "
+        comment = (f"{current_temp_rounded}°C e {translated_description} em {cidade} em {today.strftime('%d/%m')}. "
                    f"Média para os próximos dias: " + ", ".join(forecast_str) + ".")
         
         return comment
