@@ -63,17 +63,22 @@ cd OpenWeatherMap
 
 Para utilizar as APIs, você precisará de chaves de API que podem ser obtidas da seguinte forma:
 
-    OpenWeatherMap:
+    OpenWeatherMap[OWM_API_KEY]:
         Crie uma conta no OpenWeatherMap.
         Após a verificação do e-mail, faça login e acesse a seção "API Keys" no painel.
         Clique em "Create" para gerar uma nova chave de API e copie essa chave.
 
-    GitHub:
+    GitHub[GITHUB_API_KEY]:
         Acesse GitHub e faça login.
         Vá para as configurações da sua conta e selecione "Developer settings".
         Clique em "Personal access tokens" e, em seguida, em "Tokens (classic)".
         Clique em "Generate new token", selecione os escopos necessários (como gist) e crie o token. Certifique-se de copiá-lo imediatamente.
 
+    Gist[GIST_TOKEN]:
+        Acesse a página de Gists no GitHub.
+        Clique em "New gist" para criar um novo Gist.
+        Preencha o título e a descrição do seu Gist e adicione o conteúdo desejado.
+        Após criar o Gist, copie o URL do Gist gerado (ele terá um formato como https://gist.github.com/usuario/id_do_repositorio).
 
 ### Configure suas variáveis de ambiente. 
 
@@ -82,6 +87,7 @@ Crie um arquivo ```.env``` na raiz do projeto com suas chaves de API:
 ```
 OWM_API_KEY=sua_chave_api_openweathermap
 GITHUB_API_KEY=sua_chave_api_github
+GIST_TOKEN=id_do_repositório gist
 ```
 
 ### Executando o Docker

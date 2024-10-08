@@ -23,7 +23,7 @@ class GistService:
         comment = self.comment_formatter.format_comment(weather, forecast, cidade)
 
         # Enviar o comentário ao Gist
-        gist_id = "3278511ba592a171093015bb84810ddc"  # Seu ID do Gist
+        gist_id = os.getenv("GIST_TOKEN")
         gist = self.github.get_gist(gist_id)
         gist.create_comment(comment)
         
