@@ -10,7 +10,7 @@ load_dotenv()
 class GistService:
     def __init__(self):
         self.github_token = os.getenv("GITHUB_TOKEN")
-        self.g = Github(self.github_token)
+        self.github = Github(self.github_token)
         self.weather_sdk = OpenWeatherSDK()
         self.comment_formatter = CommentFormatter()
 
@@ -24,7 +24,7 @@ class GistService:
 
         # Enviar o comentário ao Gist
         gist_id = "3278511ba592a171093015bb84810ddc"  # Seu ID do Gist
-        gist = self.g.get_gist(gist_id)
+        gist = self.github.get_gist(gist_id)
         gist.create_comment(comment)
         
         return comment
