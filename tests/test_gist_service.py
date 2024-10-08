@@ -1,6 +1,6 @@
 import os
 import pytest
-from app.gist_service import add_comment_to_gist
+from app.gist_service import GistService
 
 # Mock da resposta do Gist
 class MockGist:
@@ -22,8 +22,11 @@ def test_add_comment_to_gist(monkeypatch):
     # Mock do Github
     monkeypatch.setattr('app.gist_service.Github', MockGithub)
 
+    # Instanciar o serviço
+    gist_service = GistService()
+
     # Chamar a função que estamos testando
-    result = add_comment_to_gist('fake_gist_id', 'This is a comment.')
+    result = gist_service.add_comment_to_gist('fake_gist_id', 'This is a comment.')
 
     # Verifica se o comentário foi realmente "adicionado"
     assert result == 'This is a comment.'  # Verifica se o comentário retornado está correto
