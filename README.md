@@ -109,7 +109,15 @@ sudo docker exec -it {NOME DO CONTAINER} /bin/bash
 Navegue até a pasta de testes e Execute os testes:
 ```
 cd /app/tests
+pytest test_comment_formatter.py
+pytest test_weather_sdk.py
 pytest test_gist_service.py
+pytest test_gist_service.py
+pytest test_main.py
+```
+Executar todos os testes:
+```
+pytest
 ```
 
 ### Ngrok (Opcional)
@@ -122,12 +130,13 @@ Para integrar o Ngrok à sua aplicação, descomente a seção correspondente no
   #   image: wernight/ngrok
   #   environment:
   #     - NGROK_PORT=app:8000  # Faz o ngrok se conectar ao serviço app na porta 8000
-  #     - NGROK_AUTH={TOKEN_NGROK}  # Substitua pelo seu token de autenticação do ngrok (opcional)
+  #     - NGROK_AUTH={TOKEN_NGROK}  # Substitua pelo seu token de autenticação do ngrok
   #   ports:
   #     - "4040:4040"  # Porta para acessar o dashboard do ngrok
   #   depends_on:
   #     - app  # Certifique-se de que o app suba antes do ngrok
 ```
+https://ngrok.com/docs/using-ngrok-with/docker/
 
 ### Formatação exemplo
 
